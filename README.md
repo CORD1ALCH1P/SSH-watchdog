@@ -35,7 +35,7 @@ A simple Python-based tool that monitors SSH login attempts on a Linux server an
 #### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/ssh-telegram-monitor.git
+git clone https://github.com/CORD1ALCH1P/SSH-watchdog.git
 cd ssh-telegram-monitor
 ```
 
