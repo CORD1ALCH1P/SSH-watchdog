@@ -3,12 +3,12 @@ import re
 import requests
 from datetime import datetime
 
-# Настройки
+# configuration
 TOKEN = '123456789:ABCDEF_your_token_here'
-CHAT_ID = '1079869451_your_chat_id_here'
-LOG_FILE = '/var/log/auth.log'  # Или /var/log/secure на CentOS
+CHAT_ID = 'exmp_your_chat_id_here'
+LOG_FILE = '/var/log/auth.log'  # Or /var/log/secure for CentOS
 
-# Отправка сообщения в Telegram
+# Telegram sending
 def send_telegram_message(message):
     url = f'https://api.telegram.org/bot{TOKEN}/sendMessage'
     data = {
@@ -18,7 +18,7 @@ def send_telegram_message(message):
     }
     requests.post(url, data=data)
 
-# Чтение лога в реальном времени
+# log real-time reading
 def follow(file):
     file.seek(0, 2)
     while True:
@@ -28,17 +28,17 @@ def follow(file):
             continue
         yield line
 
-# Парсинг строки лога
+# pars log's string
 def parse_ssh_log(line):
     now = datetime.now().strftime('%H:%M:%S')
 
-    # Успешный вход
+    # if pass was accepted
     match_accepted = re.search(r'Accepted \S+ for (\S+) from ([\d.]+) port (\d+)', line)
     if match_accepted:
         user, ip, port = match_accepted.groups()
         return f"✅ Accepted password for <b>{user}</b> from <code>{ip}</code> port <code>{port}</code> ssh2 at <b>{now}</b>"
 
-    # Неудачный вход
+    # if pass was wrong
     match_failed = re.search(r'Failed \S+ for (invalid user )?(\S+) from ([\d.]+) port (\d+)', line)
     if match_failed:
         _, user, ip, port = match_failed.groups()
@@ -46,7 +46,7 @@ def parse_ssh_log(line):
 
     return None
 
-# Основной цикл
+# main
 with open(LOG_FILE, 'r') as logfile:
     loglines = follow(logfile)
     for line in loglines:
